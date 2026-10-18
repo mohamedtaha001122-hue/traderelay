@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TradeRelay — نسخ توصيات تيليجرام إلى MetaTrader 5</title>
+<meta name="description" content="TradeRelay يقرأ توصيات قنوات تيليجرام بالعربي والإنجليزي وينفّذها على MetaTrader 5 بإدارة مخاطر كاملة.">
+<style>
+:root{--bg:#0b0e14;--card:#121722;--line:#222a38;--text:#e7ecf3;--dim:#94a0b4;--acc:#4f8cff;--ok:#22c58b;--warn:#f5b13d;--bad:#f2555a}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",Tahoma,"Noto Sans Arabic",system-ui,sans-serif;line-height:1.7}
+a{color:var(--acc)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+header{position:sticky;top:0;background:rgba(11,14,20,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:5}
+header .wrap{display:flex;align-items:center;gap:12px;height:60px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px}
+.logo i{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#4f8cff,#2459d6);display:grid;place-items:center;font-style:normal}
+nav{margin-inline-start:auto;display:flex;gap:16px;align-items:center}
+nav a{color:var(--dim);text-decoration:none;font-size:14px}
+.btn{display:inline-block;padding:10px 18px;border-radius:10px;background:var(--acc);color:#fff;text-decoration:none;font-weight:700;border:0;cursor:pointer;font-size:15px}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+.lang{background:transparent;border:1px solid var(--line);color:var(--dim);border-radius:8px;padding:4px 10px;cursor:pointer}
+.hero{padding:64px 0 32px;text-align:center}
+.hero h1{font-size:clamp(28px,5vw,46px);line-height:1.25;margin:0 0 14px}
+.hero p{color:var(--dim);font-size:18px;max-width:720px;margin:0 auto 24px}
+.hero .cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.shot{margin:36px auto 0;border:1px solid var(--line);border-radius:14px;overflow:hidden;max-width:960px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.shot img{display:block;width:100%;height:auto}
+section{padding:48px 0}
+h2{font-size:28px;margin:0 0 8px;text-align:center}
+.sub{color:var(--dim);text-align:center;margin:0 0 28px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.card h3{margin:0 0 6px;font-size:17px}
+.card p{margin:0;color:var(--dim);font-size:15px}
+.steps{counter-reset:s}
+.steps .card{position:relative;padding-top:44px}
+.steps .card::before{counter-increment:s;content:counter(s);position:absolute;top:14px;inset-inline-start:20px;width:24px;height:24px;border-radius:50%;background:var(--acc);display:grid;place-items:center;font-weight:800;font-size:13px}
+.plans .card{display:flex;flex-direction:column}
+.plans .card.pop{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.price{font-size:34px;font-weight:800;margin:6px 0 2px}
+.price small{font-size:14px;color:var(--dim);font-weight:400}
+.plans ul{list-style:none;padding:0;margin:14px 0 18px;flex:1}
+.plans li{padding:4px 0;font-size:15px}
+.plans li.no{color:var(--dim);text-decoration:line-through;opacity:.7}
+.plans .btn{text-align:center}
+.tag{display:inline-block;align-self:flex-start;font-size:12px;background:rgba(79,140,255,.15);color:var(--acc);border-radius:999px;padding:2px 10px;margin-bottom:6px}
+.gallery{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.gallery figure{margin:0;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.gallery img{width:100%;display:block}
+.gallery figcaption{padding:10px 14px;color:var(--dim);font-size:14px}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:700}
+details p{color:var(--dim);margin:10px 0 0}
+.risk{background:rgba(245,177,61,.08);border:1px solid rgba(245,177,61,.35);border-radius:14px;padding:18px 20px;color:#f3d9a4;font-size:14px}
+.contact{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:6px}.contact a{color:var(--text);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+.wa{position:fixed;bottom:18px;left:18px;background:#25d366;color:#fff;border-radius:999px;padding:12px 18px;font-weight:700;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:9}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--dim);font-size:13px;text-align:center}
+[data-en]{display:none}
+html[lang="en"] [data-ar]{display:none}
+html[lang="en"] [data-en]{display:revert}
+@media (max-width:640px){nav a{display:none}.hero{padding-top:40px}}
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+  <div class="logo"><i>↗</i>TradeRelay</div>
+  <nav>
+    <a href="#features"><span data-ar>المزايا</span><span data-en>Features</span></a>
+    <a href="#pricing"><span data-ar>الأسعار</span><span data-en>Pricing</span></a>
+    <a href="#faq"><span data-ar>أسئلة</span><span data-en>FAQ</span></a>
+    <button class="lang" id="lang">English</button>
+  </nav>
+</div></header>
+
+<main>
+<div class="wrap hero">
+  <h1 data-ar>توصيات تيليجرام ← صفقات على MetaTrader 5<br>تلقائيًا وبإدارة مخاطر</h1>
+  <h1 data-en>Telegram signals → MetaTrader 5 trades<br>automatically, with risk control</h1>
+  <p data-ar>TradeRelay يقرأ رسائل القنوات بأي صياغة (عربي، إنجليزي، عامية، صور)، ويحوّلها إلى أوامر بالدخول والوقف والأهداف، وينفّذها على حسابك حسب حدود المخاطرة التي تضعها أنت.</p>
+  <p data-en>TradeRelay reads channel messages in any wording (Arabic, English, mixed, images), turns them into orders with entry, stop loss and targets, and executes them on your account within the risk limits you set.</p>
+  <div class="cta">
+    <a class="btn" href="#pricing"><span data-ar>جرّب 7 أيام مجانًا</span><span data-en>Try 7 days free</span></a>
+    <a class="btn ghost" href="#how"><span data-ar>كيف يعمل؟</span><span data-en>How it works</span></a>
+  </div>
+  <div class="shot"><img src="images/03-dashboard.png" alt="TradeRelay dashboard" loading="lazy"></div>
+</div>
+
+<section id="features"><div class="wrap">
+  <h2><span data-ar>لماذا TradeRelay؟</span><span data-en>Why TradeRelay?</span></h2>
+  <p class="sub"><span data-ar>مصمَّم لقنوات التوصيات العربية من اليوم الأول</span><span data-en>Built for Arabic signal channels from day one</span></p>
+  <div class="grid">
+    <div class="card"><h3 data-ar>🧠 يفهم أي صياغة</h3><h3 data-en>🧠 Understands any wording</h3>
+      <p data-ar>عربي فصيح وعامية وإنجليزي وخليط وإيموجي وأرقام عربية، مع قاموس قابل للتعديل لكل قناة.</p>
+      <p data-en>Formal Arabic, dialect, English, mixed text, emoji and Arabic numerals, with an editable per-channel dictionary.</p></div>
+    <div class="card"><h3 data-ar>🖼️ يقرأ الصور</h3><h3 data-en>🖼️ Reads images</h3>
+      <p data-ar>توصيات منشورة كصورة؟ يستخرج الأرقام ويتحقق منها قبل التنفيذ.</p>
+      <p data-en>Signals posted as images? It extracts and sanity-checks the numbers before executing.</p></div>
+    <div class="card"><h3 data-ar>🛡️ إدارة مخاطر</h3><h3 data-en>🛡️ Risk management</h3>
+      <p data-ar>نسبة مخاطرة لكل صفقة، حد خسارة يومي، حماية رأس المال، فلتر الأخبار، وإيقاف طارئ بضغطة.</p>
+      <p data-en>Risk per trade, daily loss limit, equity protection, news filter, and a one-click emergency stop.</p></div>
+    <div class="card"><h3 data-ar>🎯 إدارة الصفقة</h3><h3 data-en>🎯 Trade management</h3>
+      <p data-ar>إغلاق جزئي عند الأهداف، نقل الوقف للتعادل، وقف متحرك، وتنفيذ تعديلات القناة («اقفل»، «حرّك الوقف»).</p>
+      <p data-en>Partial closes at targets, break-even, trailing stop, and follow-up commands from the channel ("close", "move SL").</p></div>
+    <div class="card"><h3 data-ar>📊 نتائج كل قناة</h3><h3 data-en>📊 Per-channel results</h3>
+      <p data-ar>نسبة الكسب والربح لكل قناة، وتقرير أسبوعي، لتعرف أي قناة تستحق الثقة.</p>
+      <p data-en>Win rate and profit per channel plus a weekly report, so you know which channels to trust.</p></div>
+    <div class="card"><h3 data-ar>📱 تحكم من الموبايل</h3><h3 data-en>📱 Mobile control</h3>
+      <p data-ar>بوت تيليجرام خاص بك للتنبيهات والإيقاف والتقارير من أي مكان.</p>
+      <p data-en>Your own Telegram bot for alerts, stop and reports from anywhere.</p></div>
+    <div class="card"><h3 data-ar>🔒 بياناتك على جهازك</h3><h3 data-en>🔒 Your data stays local</h3>
+      <p data-ar>لا يوجد خادم وسيط لرسائلك أو حساباتك. كلمات المرور لا تغادر جهازك.</p>
+      <p data-en>No middle server for your messages or accounts. Passwords never leave your computer.</p></div>
+    <div class="card"><h3 data-ar>🧪 آمن للبداية</h3><h3 data-en>🧪 Safe to start</h3>
+      <p data-ar>يبدأ في وضع المحاكاة، ثم الديمو، ولا ينتقل للحساب الحقيقي إلا بقرارك.</p>
+      <p data-en>Starts in simulation, then demo, and goes live only when you decide.</p></div>
+  </div>
+</div></section>
+
+<section id="how"><div class="wrap">
+  <h2><span data-ar>كيف يعمل؟</span><span data-en>How it works</span></h2>
+  <p class="sub"><span data-ar>جاهز في أقل من نصف ساعة</span><span data-en>Ready in under 30 minutes</span></p>
+  <div class="grid steps">
+    <div class="card"><h3 data-ar>ثبّت البرنامج</h3><h3 data-en>Install</h3>
+      <p data-ar>ملف واحد على ويندوز يجهّز كل شيء وحده.</p><p data-en>One file on Windows sets everything up.</p></div>
+    <div class="card"><h3 data-ar>اربط تيليجرام</h3><h3 data-en>Connect Telegram</h3>
+      <p data-ar>بحسابك، واختر القنوات التي أنت عضو فيها.</p><p data-en>With your account; pick channels you're a member of.</p></div>
+    <div class="card"><h3 data-ar>اربط MT5</h3><h3 data-en>Connect MT5</h3>
+      <p data-ar>حساب واحد أو عدة حسابات عبر الخبير.</p><p data-en>One account, or several via the EA.</p></div>
+    <div class="card"><h3 data-ar>اختبر ثم فعّل</h3><h3 data-en>Test, then enable</h3>
+      <p data-ar>جرّب على المحاكاة والديمو، ثم اسمح بالتنفيذ للقنوات التي تثق بها.</p><p data-en>Try on paper and demo, then allow execution for channels you trust.</p></div>
+  </div>
+  <div class="gallery" style="margin-top:22px">
+    <figure><img src="images/05-telegram.png" alt="" loading="lazy"><figcaption><span data-ar>مصادر التوصيات</span><span data-en>Signal sources</span></figcaption></figure>
+    <figure><img src="images/07-settings.png" alt="" loading="lazy"><figcaption><span data-ar>ملف المخاطرة</span><span data-en>Risk profile</span></figcaption></figure>
+    <figure><img src="images/08-health.png" alt="" loading="lazy"><figcaption><span data-ar>فحص شامل بضغطة</span><span data-en>One-click self-test</span></figcaption></figure>
+  </div>
+</div></section>
+
+<section id="pricing"><div class="wrap">
+  <h2><span data-ar>الباقات</span><span data-en>Plans</span></h2>
+  <p class="sub"><span data-ar>كل الباقات تبدأ بتجربة مجانية 7 أيام على حساب ديمو</span><span data-en>Every plan starts with a free 7-day demo trial</span></p>
+  <div class="grid plans">
+    <div class="card">
+      <span class="tag">BASIC</span>
+      <h3 data-ar>الأساسية</h3><h3 data-en>Basic</h3>
+      <div class="price" style="font-size:26px"><span data-ar>تواصل معنا للسعر</span><span data-en>Contact us for price</span></div>
+      <ul><li>✓ <span data-ar>قراءة التوصيات المكتوبة وإدارة الصفقات</span><span data-en>Text signals &amp; trade management</span></li><li>✓ <span data-ar>إدارة المخاطر والحماية الكاملة</span><span data-en>Full risk management &amp; protection</span></li><li>✓ <span data-ar>حساب MT5 واحد</span><span data-en>1 MT5 account</span></li><li>✓ <span data-ar>جهاز واحد</span><span data-en>1 device</span></li><li class="no"><span data-ar>قراءة توصيات الصور</span><span data-en>Image signals</span></li><li class="no"><span data-ar>الذكاء الاصطناعي (المفسّر والتقارير)</span><span data-en>AI (interpreter &amp; reports)</span></li><li class="no"><span data-ar>نشر الصفقات على قناتك</span><span data-en>Publish trades to your channel</span></li></ul>
+      <a class="btn ghost" href="https://wa.me/201226805910?text=%D8%A3%D9%87%D9%84%D9%8B%D8%A7%D8%8C%20%D8%B9%D8%A7%D9%8A%D8%B2%20%D8%A3%D8%B4%D8%AA%D8%B1%D9%83%20%D9%81%D9%8A%20TradeRelay%20%E2%80%94%20%D8%A8%D8%A7%D9%82%D8%A9%20%D8%A7%D9%84%D8%A3%D8%B3%D8%A7%D8%B3%D9%8A%D8%A9%20%E2%80%94%20Basic" target="_blank" rel="noopener"><span data-ar>اشترك الآن</span><span data-en>Subscribe</span></a>
+    </div>
+    <div class="card pop">
+      <span class="tag" data-ar>الأكثر طلبًا · PRO</span><span class="tag" data-en>Most popular · PRO</span>
+      <h3 data-ar>الاحترافية</h3><h3 data-en>Pro</h3>
+      <div class="price" style="font-size:26px"><span data-ar>تواصل معنا للسعر</span><span data-en>Contact us for price</span></div>
+      <ul><li>✓ <span data-ar>قراءة التوصيات المكتوبة وإدارة الصفقات</span><span data-en>Text signals &amp; trade management</span></li><li>✓ <span data-ar>إدارة المخاطر والحماية الكاملة</span><span data-en>Full risk management &amp; protection</span></li><li>✓ <span data-ar>3 حسابات MT5</span><span data-en>3 MT5 accounts</span></li><li>✓ <span data-ar>جهاز واحد</span><span data-en>1 device</span></li><li>✓ <span data-ar>قراءة توصيات الصور</span><span data-en>Image signals</span></li><li>✓ <span data-ar>الذكاء الاصطناعي (المفسّر والتقارير)</span><span data-en>AI (interpreter &amp; reports)</span></li><li class="no"><span data-ar>نشر الصفقات على قناتك</span><span data-en>Publish trades to your channel</span></li></ul>
+      <a class="btn" href="https://wa.me/201226805910?text=%D8%A3%D9%87%D9%84%D9%8B%D8%A7%D8%8C%20%D8%B9%D8%A7%D9%8A%D8%B2%20%D8%A3%D8%B4%D8%AA%D8%B1%D9%83%20%D9%81%D9%8A%20TradeRelay%20%E2%80%94%20%D8%A8%D8%A7%D9%82%D8%A9%20%D8%A7%D9%84%D8%A7%D8%AD%D8%AA%D8%B1%D8%A7%D9%81%D9%8A%D8%A9%20%E2%80%94%20Pro" target="_blank" rel="noopener"><span data-ar>اشترك الآن</span><span data-en>Subscribe</span></a>
+    </div>
+    <div class="card">
+      <span class="tag">VIP</span>
+      <h3 data-ar>المتكاملة</h3><h3 data-en>VIP</h3>
+      <div class="price" style="font-size:26px"><span data-ar>تواصل معنا للسعر</span><span data-en>Contact us for price</span></div>
+      <ul><li>✓ <span data-ar>قراءة التوصيات المكتوبة وإدارة الصفقات</span><span data-en>Text signals &amp; trade management</span></li><li>✓ <span data-ar>إدارة المخاطر والحماية الكاملة</span><span data-en>Full risk management &amp; protection</span></li><li>✓ <span data-ar>10 حسابات MT5</span><span data-en>10 MT5 accounts</span></li><li>✓ <span data-ar>جهازين</span><span data-en>2 devices</span></li><li>✓ <span data-ar>قراءة توصيات الصور</span><span data-en>Image signals</span></li><li>✓ <span data-ar>الذكاء الاصطناعي (المفسّر والتقارير)</span><span data-en>AI (interpreter &amp; reports)</span></li><li>✓ <span data-ar>نشر الصفقات على قناتك</span><span data-en>Publish trades to your channel</span></li></ul>
+      <a class="btn ghost" href="https://wa.me/201226805910?text=%D8%A3%D9%87%D9%84%D9%8B%D8%A7%D8%8C%20%D8%B9%D8%A7%D9%8A%D8%B2%20%D8%A3%D8%B4%D8%AA%D8%B1%D9%83%20%D9%81%D9%8A%20TradeRelay%20%E2%80%94%20%D8%A8%D8%A7%D9%82%D8%A9%20%D8%A7%D9%84%D9%85%D8%AA%D9%83%D8%A7%D9%85%D9%84%D8%A9%20%E2%80%94%20VIP" target="_blank" rel="noopener"><span data-ar>اشترك الآن</span><span data-en>Subscribe</span></a>
+    </div>
+  </div>
+  <p class="sub" style="margin-top:16px"><span data-ar>للاشتراك أو أي سؤال: اضغط «اشترك الآن» وهنرد عليك.</span><span data-en>To subscribe or ask anything, press Subscribe.</span></p>
+</div></section>
+
+<section id="faq"><div class="wrap">
+  <h2><span data-ar>أسئلة شائعة</span><span data-en>FAQ</span></h2>
+  <p class="sub"></p>
+  <details><summary data-ar>هل يضمن البرنامج أرباحًا؟</summary><summary data-en>Does it guarantee profits?</summary>
+    <p data-ar>لا. البرنامج ينفّذ توصيات القنوات التي تختارها أنت. النتيجة تعتمد على جودة القناة وإعدادات المخاطرة. جرّب على الديمو أولًا.</p>
+    <p data-en>No. It executes the signals of channels you choose. Results depend on the channel and your risk settings. Test on demo first.</p></details>
+  <details><summary data-ar>هل يحتاج الجهاز أن يبقى مفتوحًا؟</summary><summary data-en>Must my computer stay on?</summary>
+    <p data-ar>نعم، أو استخدم VPS بنظام ويندوز ليعمل 24 ساعة.</p>
+    <p data-en>Yes — or use a Windows VPS to run 24/7.</p></details>
+  <details><summary data-ar>هل يعمل مع أي وسيط؟</summary><summary data-en>Does it work with any broker?</summary>
+    <p data-ar>يعمل مع أي وسيط يدعم MetaTrader 5، ويربط أسماء الرموز المختلفة (مثل XAUUSD و GOLD) تلقائيًا.</p>
+    <p data-en>Any broker with MetaTrader 5. Different symbol names (e.g. XAUUSD vs GOLD) are mapped automatically.</p></details>
+  <details><summary data-ar>هل بياناتي آمنة؟</summary><summary data-en>Is my data safe?</summary>
+    <p data-ar>كل شيء يعمل على جهازك. لا نرى رسائلك ولا حساباتك ولا كلمات مرورك. إن فعّلت الذكاء الاصطناعي تُرسل نصوص الرسائل إلى المزوّد الذي تختاره بمفتاحك.</p>
+    <p data-en>Everything runs on your computer. We never see your messages, accounts or passwords. If you enable AI, message text goes to the provider you choose, with your own key.</p></details>
+  <details><summary data-ar>ماذا يحدث عند انتهاء الاشتراك؟</summary><summary data-en>What happens when my subscription ends?</summary>
+    <p data-ar>يتوقف فتح صفقات جديدة فقط، وتبقى الصفقات المفتوحة تحت الإدارة حتى تُغلق.</p>
+    <p data-en>Only new trades stop. Open trades keep being managed until they close.</p></details>
+  <details><summary data-ar>هل أستطيع نقل الترخيص لجهاز آخر؟</summary><summary data-en>Can I move my license to another computer?</summary>
+    <p data-ar>نعم، تواصل معنا وأرسل رقم الجهاز الجديد.</p>
+    <p data-en>Yes — contact us with the new device ID.</p></details>
+</div></section>
+
+<section><div class="wrap">
+  <div class="risk">
+    <b data-ar>⚠️ تحذير المخاطر:</b><b data-en>⚠️ Risk warning:</b>
+    <span data-ar>تداول العملات والمعادن والعقود مقابل الفروقات عالي المخاطر وقد تخسر رأس مالك كله. TradeRelay أداة تنفيذ وليس نصيحة استثمارية، ولا يوصي بأي صفقة. النتائج السابقة لأي قناة لا تضمن النتائج المستقبلية. تأكد أن التداول الآلي مسموح لدى وسيطك وفي بلدك.</span>
+    <span data-en>Trading forex, metals and CFDs is high risk and you may lose all your capital. TradeRelay is an execution tool, not investment advice, and does not recommend any trade. Past results of any channel do not guarantee future results. Make sure automated trading is allowed by your broker and in your country.</span>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <div class="contact"><a href="https://wa.me/201226805910" target="_blank" rel="noopener">💬 <span dir="ltr">01226805910</span></a><a href="https://t.me/tradingworldi" target="_blank" rel="noopener">✈️ <span dir="ltr">@tradingworldi</span></a><a href="tel:01226805910" target="_blank" rel="noopener">📞 <span dir="ltr">01226805910</span></a><a href="mailto:mohamedtaha001122@gmail.com" target="_blank" rel="noopener">✉️ <span dir="ltr">mohamedtaha001122@gmail.com</span></a></div>
+  <div style="margin-top:6px">
+    <a href="terms.html"><span data-ar>الشروط</span><span data-en>Terms</span></a> ·
+    <a href="privacy.html"><span data-ar>الخصوصية</span><span data-en>Privacy</span></a> ·
+    <a href="disclaimer.html"><span data-ar>إخلاء المسؤولية</span><span data-en>Disclaimer</span></a>
+  </div>
+  <div style="margin-top:6px">© <span id="y"></span> Mohamed Taha. MetaTrader is a trademark of MetaQuotes Ltd. Telegram is a trademark of Telegram FZ-LLC. TradeRelay is not affiliated with either.</div>
+</div></footer>
+
+<script>
+(function () {
+  var h = document.documentElement, b = document.getElementById('lang');
+  function set(l) { h.lang = l; h.dir = l === 'ar' ? 'rtl' : 'ltr'; b.textContent = l === 'ar' ? 'English' : 'العربية'; }
+  b.addEventListener('click', function () { set(h.lang === 'ar' ? 'en' : 'ar'); });
+  if (/[?&]lang=en/.test(location.search)) set('en');
+  document.getElementById('y').textContent = new Date().getFullYear();
+})();
+</script>
+<a class="wa" href="https://wa.me/201226805910" target="_blank" rel="noopener">💬 <span data-ar>كلّمنا واتساب</span><span data-en>WhatsApp us</span></a>
+</body>
+</html>
